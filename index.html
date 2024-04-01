@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Moa Manchetes NYT</title>
+    <link rel="icon" href="./moa.ico">
+    <style>
+        /* Estilos globais */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-image: url('moaoa.png');
+            background-size: cover;
+            background-position: center;
+            color: #333;
+        }
+
+        footer {
+            text-align: center;
+            color: rgb(243, 232, 232);
+            width: 30%;
+            position: fixed;
+            bottom: 0;
+            font-size: 5px;
+            line-height: 1.2;
+            padding: 1px 0;
+        }
+
+        footer a {
+            color: rgb(238, 238, 20);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: #0077cc;
+        }
+
+        /* Elementos específicos */
+        h1, h2 {
+            margin: 10px 0;
+            text-align: center;
+            font-size: 2em;
+            color: #333;
+            cursor: pointer;
+            transition: color 0.3s ease-in-out;
+            animation: moveLetters 1s infinite alternate;
+        }
+
+        #nytimes-news {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-gap: 20px;
+            justify-items: center;
+            margin: 20px;
+        }
+
+        .headline {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .byline {
+            font-style: italic;
+            color: #888;
+        }
+
+        .news-article {
+            border: 1px solid rgb(255, 255, 255);
+            padding: 10px;
+            background-color: rgb(0, 0, 0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .news-article:hover {
+            transform: translateY(-5px);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            max-height: 150px; /* limite máximo de altura para a imagem */
+        }
+
+        /* Modo escuro */
+        body.dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
+
+        /* Animação */
+        @keyframes moveLetters {
+            from {
+                transform: translateX(30px);
+            }
+            to {
+                transform: translateX(50px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="moving-letters">Manchetes</h1>
+    <h2 class="moving-letters">The New York Times</h2>
+
+    <div id="nytimes-news"></div>
+
+    <footer>
+        <p>&copy; <a href="https://github.com/moa-fernandes" target="_blank">2023 Moa Fernandes (GitHub)</a></p>
+    </footer>
+
+    <script>
+        const apiKey = 'tB15bwsNNalZUeSv4G1qQoaXbSEx60jC';
+        const apiUrl = `https://api.nytimes.com/svc/topstories/v2/home.json?api-key=${apiKey}`;
+
+        const newsContainer = document.getElementById('nytimes-news');
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                const articles = data.results;
+
+                articles.forEach(article => {
+                    const articleDiv = document.createElement('div');
+                    articleDiv.className = 'news-article';
+
+                    const headline = document.createElement('div');
+                    headline.className = 'headline';
+                    headline.textContent = article.title;
+
+                    const byline = document.createElement('div');
+                    byline.className = 'byline';
+                    byline.textContent = article.byline;
+
+                    const image = document.createElement('img');
+                    image.src = article.multimedia[0].url;
+                    image.alt = article.multimedia[0].caption;
+
+                    articleDiv.appendChild(headline);
+                    articleDiv.appendChild(byline);
+                    articleDiv.appendChild(image);
+
+                    newsContainer.appendChild(articleDiv);
+                });
+            })
+            .catch(error => {
+                console.error('Erro ao conectar com o The New York Times.', error);
+            });
+    </script>
+</body>
+
+</html>
